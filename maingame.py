@@ -21,7 +21,17 @@ ball = pygame.image.load('ball.png')
 rock = pygame.image.load('rock.jpg')
 TILE_SIZE = rock.get_width()
 dirt = pygame.image.load('dirt.jpg')
-def map
+def load_map(path):
+    f = open(path + '.txt','r')
+    data = f.read()
+    f.close()
+    data = data.split('\n')
+    game_map = []
+    for row in data:
+        game_map.append(list(row))
+    return game_map
+
+game_map = load_map('map1')
 
 def collision_test(rect, tiles):       # collision testing
     hit_list = []
