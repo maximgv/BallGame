@@ -62,6 +62,9 @@ def move(rect, movement, tiles):
             collision_types['top'] = True
     return rect, collision_types
 
+
+
+
 moving_right = False
 moving_left = False
 ismoving = False 
@@ -77,6 +80,11 @@ barl_rect = pygame.Rect(100,100,100,50)
 
 
 
+background_objects = [[0.25,[120,10,70,400]],[0.25,[280,30,40,400]],[0.5,[30,40,40,400]],[0.5,[130,90,100,400]],[0.5,[300,80,120,400]]]
+
+
+
+pygame.display.set_caption('Game')
 while True: #the game loop 
     display.fill((146,244,255))
 
