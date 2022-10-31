@@ -99,7 +99,7 @@ while True: #the game loop
 
 
 
-    ball_movement = [0, 0]         #code for ball movement
+    ball_movement = [0, 0]
     if moving_right:
         ball_movement[0] += 2
     if moving_left:
@@ -112,31 +112,30 @@ while True: #the game loop
     ball_rect, collisions = move(ball_rect, ball_movement, tile_rects)
 
     if collisions['bottom']:
-        player_y_momentum = 0
+        ball_y_momentum = 0
         air_timer = 0
     else:
         air_timer += 1
 
-
     display.blit(ball, (ball_rect.x, ball_rect.y))
 
-
-    for event in pygame.event.get(): #event loop
-        if event.type == QUIT: #checks whether the window has been quit
-            pygame.quit() # stops pygame
-            sys.exit() # stops sys script
+    for event in pygame.event.get(): # event loop
+        if event.type == QUIT: # check for window quit
+            pygame.quit() # stop pygame
+            sys.exit() # stop script
         if event.type == KEYDOWN:
-            ismoving = True
             if event.key == K_RIGHT:
-                moving_right = TRUE
+                moving_right = True
             if event.key == K_LEFT:
-                moving_left = TRUE
+                moving_left = True
+            if event.key == K_UP:
+                if air_timer < 6:
+                    ball_y_momentum = -5
         if event.type == KEYUP:
-            ismoving = False
             if event.key == K_RIGHT:
-                moving_right = FALSE
+                moving_right = False
             if event.key == K_LEFT:
-                moving_left = FALSE
+                moving_left = False
 
     
 
