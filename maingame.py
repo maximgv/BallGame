@@ -31,7 +31,46 @@ def load_map(path):
         game_map.append(list(row))
     return game_map
 
+
+global animation_frames
+animation_frames = {}
+
+def load_animation(path,frame_durations):
+    global animation_frames
+    animation_name = path.split('/')[-1]
+    animation_frame_data = []
+    n = 0
+    for frame in frame_durations:
+        animation_frame_id = animation_name + '_' + str(n)
+        img_loc = path + '/' + animation_frame_id + '.png'
+        animation_image = pygame.image.load(img_loc).convert()
+        animation_image.set_colorkey((146,244,255))
+        animation_frames[animation_frame_id] = animation_image.copy()
+        for i in range(frame):
+            animation_frame_data.append(animation_frame_id)
+        n += 1
+    return animation_frame_data
+
+def change_action(action_var,frame,new_value):
+    if action_var != new_value:
+        action_var = new_value
+        frame = 0
+    return action_var,frame
+        
+
+animations = {}
+
+animations['roll'] = load_animation('ball_anim/roll',[3,3,3,3])
+animations['no'] = load_animation('ball_anim/no',[15,15,15])
+
+
 game_map = load_map('map1')
+
+ball_action = 'idle'
+player_frame = 0
+player_flip = False
+
+
 
 def collision_test(rect, tiles):       # collision testing
     hit_list = []
@@ -131,6 +170,17 @@ while True: #the game loop
     if ball_y_momentum > 3:
         ball_y_momentum = 3
 
+
+    if ball_movement[0] == 0:
+        ball_action,player_frame = change_action(ball_action,player_frame,'no')
+    if ball_movement[0] > 0:
+        player_flip = False
+        ball_action,player_frame = change_action(ball_action,player_frame,'roll')
+    if ball_movement[0] < 0:
+        player_flip = True
+        ball_action,player_frame = change_action(ball_action,player_frame,'roll')
+
+
     ball_rect, collisions = move(ball_rect, ball_movement, tile_rects)
 
     if collisions['bottom']:
@@ -139,7 +189,15 @@ while True: #the game loop
     else:
         air_timer += 1
 
-    display.blit(ball, (ball_rect.x-scroll[0], ball_rect.y-scroll[1]))
+    player_frame += 1
+
+    if player_frame >= len(animations[ball_action]):
+        player_frame = 0
+    player_img_id = animations[ball_action][player_frame]
+    player_img = animation_frames[player_img_id]
+    display.blit(pygame.transform.flip(player_img,player_flip,False),(ball_rect.x-scroll[0],ball_rect.y-scroll[1]))
+
+    #display.blit(ball, (ball_rect.x-scroll[0], ball_rect.y-scroll[1]))
 
     for event in pygame.event.get(): # event loop
         if event.type == QUIT: # check for window quit
