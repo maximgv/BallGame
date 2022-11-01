@@ -19,14 +19,14 @@ pygame.display.set_caption('Ball Adventure') # sets window name
 WINDOW_SIZE = (600,400) #sets window size
  
 screen = pygame.display.set_mode(WINDOW_SIZE, 0, 32) #INITIALISE WINDOW
-display = pygame.Surface((300, 200))
+display = pygame.Surface((300, 200)) #sets the display size, to be scaled up
  
 
-ball = pygame.image.load('ball.png')
+ball = pygame.image.load('ball.png')            #imports the images for sprites
 rock = pygame.image.load('rock.jpg')
 TILE_SIZE = rock.get_width()
 dirt = pygame.image.load('dirt.jpg')
-def load_map(path):
+def load_map(path):                #function to read text file to load the map
     f = open(path + '.txt','r')
     data = f.read()
     f.close()
@@ -45,7 +45,7 @@ def load_animation(path,frame_durations):
     animation_name = path.split('/')[-1]
     animation_frame_data = []
     n = 0
-    for frame in frame_durations:
+    for frame in frame_durations:                               #loads the different animation frames from 
         animation_frame_id = animation_name + '_' + str(n)
         img_loc = path + '/' + animation_frame_id + '.png'
         animation_image = pygame.image.load(img_loc).convert()
@@ -55,7 +55,7 @@ def load_animation(path,frame_durations):
         n += 1
     return animation_frame_data
 
-def change_action(action_var,frame,new_value):
+def change_action(action_var,frame,new_value):               #animation mechanics - actually makes the animaiton run
     if action_var != new_value:
         action_var = new_value
         frame = 0
@@ -64,19 +64,19 @@ def change_action(action_var,frame,new_value):
 
 animations = {}
 
-animations['roll'] = load_animation('ball_anim/roll',[3,3,3,3])
-animations['no'] = load_animation('ball_anim/no',[15,15,15])
+animations['roll'] = load_animation('ball_anim/roll',[3,3,3,3])     #runs the rolling animation
+animations['no'] = load_animation('ball_anim/no',[50,50,50])         #runs the animation for when the ball isnt moving
 
 
-game_map = load_map('map1')
+game_map = load_map('map1')   #loads the first map
 
-jump_sound = pygame.mixer.Sound('jump.wav')
+jump_sound = pygame.mixer.Sound('jump.wav')          #loads the jump sound effect 
 
 ball_action = 'idle'
 player_frame = 0
 player_flip = False
 
-pygame.mixer.music.load('music.wav')
+pygame.mixer.music.load('music.wav')     #loads and constantly plays the backgrond music 
 pygame.mixer.music.play(-1)
 
 
@@ -122,13 +122,11 @@ air_timer = 0
 scroll = [0,0]
 
 ball_rect = pygame.Rect(50, 50, ball.get_width(),ball.get_height())
-barl_rect = pygame.Rect(100,100,100,50)
+barl_rect = pygame.Rect(100,100,100,50)   #dimensions of the ball - for collisions 
 ############## ################## ##########
 
-
-
 background_objects = [[0.25,[120,10,70,400]],[0.25,[280,30,40,400]],[0.5,[30,40,40,400]],[0.5,[130,90,100,400]],[0.5,[300,80,120,400]]]
-
+#the objects in the background used for the parallax effect
 
 
 pygame.display.set_caption('Game')
@@ -136,8 +134,8 @@ while True: #the game loop
     display.fill((146,244,255))
 
 
-    scroll[0] += (ball_rect.x-scroll[0]-156) /20
-    scroll[1] += (ball_rect.y-scroll[1]-106) /20
+    scroll[0] += (ball_rect.x-scroll[0]-156) /20     #camera movement to follow the ball in x axis 
+    scroll[1] += (ball_rect.y-scroll[1]-106) /20    #camera movement to follow the ball in y axis 
 
     
     pygame.draw.rect(display,(7,80,75),pygame.Rect(0,120,300,80))
@@ -153,7 +151,7 @@ while True: #the game loop
     y=0
     for row in game_map:            
         x=0
-        for tile in row:                 #displays the tiles from the map
+        for tile in row:                 #displays the tiles from the map text file 
             if tile == '1':
                 display.blit(dirt, (x * TILE_SIZE-scroll[0], y * TILE_SIZE-scroll[1]))
             if tile == '2':
@@ -164,11 +162,7 @@ while True: #the game loop
         y +=1
 
 
-    #display.blit(ball, ball_location) #displays the ball
-
-
-
-    ball_movement = [0, 0]
+    ball_movement = [0, 0]        #uses the above mechanics to make the ball move in x and y axis
     if moving_right:
         ball_movement[0] += 2
     if moving_left:
@@ -180,7 +174,7 @@ while True: #the game loop
 
 
     if ball_movement[0] == 0:
-        ball_action,player_frame = change_action(ball_action,player_frame,'no')
+        ball_action,player_frame = change_action(ball_action,player_frame,'no')        #runs the correlated animation for the ball movement
     if ball_movement[0] > 0:
         player_flip = False
         ball_action,player_frame = change_action(ball_action,player_frame,'roll')
@@ -205,8 +199,6 @@ while True: #the game loop
     player_img = animation_frames[player_img_id]
     display.blit(pygame.transform.flip(player_img,player_flip,False),(ball_rect.x-scroll[0],ball_rect.y-scroll[1]))
 
-    #display.blit(ball, (ball_rect.x-scroll[0], ball_rect.y-scroll[1]))
-
     for event in pygame.event.get(): # event loop
         if event.type == QUIT: # check for window quit
             pygame.quit() # stop pygame
@@ -225,10 +217,6 @@ while True: #the game loop
                 moving_right = False
             if event.key == K_LEFT:
                 moving_left = False
-
-    
-
-
 
 
 
