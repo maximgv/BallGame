@@ -37,18 +37,18 @@ def load_map(path):                #function to read text file to load the map
     return game_map
 
 
-global animation_frames
+global animation_frames          #sets the frames for the animation as a global variable
 animation_frames = {}
 
-def load_animation(path,frame_durations):
+def load_animation(path,frame_durations):          #defines the functoin to load an animation
     global animation_frames
     animation_name = path.split('/')[-1]
     animation_frame_data = []
     n = 0
-    for frame in frame_durations:                               #loads the different animation frames from 
+    for frame in frame_durations:                               #loads the different animation frames from any path
         animation_frame_id = animation_name + '_' + str(n)
         img_loc = path + '/' + animation_frame_id + '.png'
-        animation_image = pygame.image.load(img_loc).convert()
+        animation_image = pygame.image.load(img_loc).convert_alpha()
         animation_frames[animation_frame_id] = animation_image.copy()
         for i in range(frame):
             animation_frame_data.append(animation_frame_id)
@@ -185,7 +185,7 @@ while True: #the game loop
 
     ball_rect, collisions = move(ball_rect, ball_movement, tile_rects)
 
-    if collisions['bottom']:
+    if collisions['bottom']:    # checks for whether the ball is on the ground and if noy then increments its air time
         ball_y_momentum = 0
         air_timer = 0
     else:
