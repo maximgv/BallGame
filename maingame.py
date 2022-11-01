@@ -5,6 +5,11 @@ import sys #imports sys library
 
 clock = pygame.time.Clock() #clock setup
 
+from pygame.locals import *
+pygame.mixer.pre_init(44100, -16, 2, 512)
+pygame.init() # initiates pygame
+pygame.mixer.set_num_channels(64)
+
 from pygame.locals import * #imports pygame modules
 
 pygame.init() #used to initiate
@@ -44,7 +49,6 @@ def load_animation(path,frame_durations):
         animation_frame_id = animation_name + '_' + str(n)
         img_loc = path + '/' + animation_frame_id + '.png'
         animation_image = pygame.image.load(img_loc).convert()
-        animation_image.set_colorkey((146,244,255))
         animation_frames[animation_frame_id] = animation_image.copy()
         for i in range(frame):
             animation_frame_data.append(animation_frame_id)
@@ -66,10 +70,14 @@ animations['no'] = load_animation('ball_anim/no',[15,15,15])
 
 game_map = load_map('map1')
 
+jump_sound = pygame.mixer.Sound('jump.wav')
+
 ball_action = 'idle'
 player_frame = 0
 player_flip = False
 
+pygame.mixer.music.load('music.wav')
+pygame.mixer.music.play(-1)
 
 
 def collision_test(rect, tiles):       # collision testing
@@ -210,6 +218,7 @@ while True: #the game loop
                 moving_left = True
             if event.key == K_UP:
                 if air_timer < 6:
+                    jump_sound.play()
                     ball_y_momentum = -5
         if event.type == KEYUP:
             if event.key == K_RIGHT:
